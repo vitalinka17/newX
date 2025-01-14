@@ -19,7 +19,8 @@ export class CreatePostDto {
   @IsUrl()
   imageUrl?: string;
 
-  authorId: number;
+  @IsNumber()
+  postId: number;
 }
 
 export class PostResponseDto {

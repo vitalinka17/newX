@@ -32,11 +32,20 @@ export class PostService {
   }
 
   async update(id: number, postDto: CreatePostDto): Promise<PostEntity> {
-    await this.postRepository.update(id, postDto);
+    const existingPost = await this.postRepository.findOne({ where: { postId: id } });
+    if (!existingPost) {
+      throw new Error(`Post with id ${id} not found`);
+    }
+    await this.postRepository.update({ postId: id, uuid: existingPost.uuid }, postDto);
     return this.postRepository.findOne({ where: { postId: id } });
   }
 
   async delete(id: number): Promise<void> {
-    await this.postRepository.delete(id);
+    const existingPost = await this.postRepository.findOne({ where: { postId: id } });
+    if (!existingPost) {
+      throw new Error(`Post with id ${id} not found`);
+    }
+
+    await this.postRepository.delete({ postId: id, uuid: existingPost.uuid });
   }
 }

@@ -14,7 +14,6 @@ import { PostEntity } from './database/post.entity';
       database: process.env.DB_DATABASE,
       entities: [PostEntity],
       synchronize: true,
-      logging: true,
     }),
     PostsModule,
   ],

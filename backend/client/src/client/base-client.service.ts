@@ -14,6 +14,11 @@ export class BaseClientService implements OnModuleInit {
       transport: Transport.TCP,
       options: { host: '127.0.0.1', port: 3001 },
     });
+
+    this.clients['AUTH_SERVICE'] = ClientProxyFactory.create({
+      transport: Transport.TCP,
+      options: { host: '127.0.0.1', port: 3002 },
+    });
   }
 
   getClient(serviceName: string): ClientProxy {

@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './database/user.entity';
-import { AuthModule } from './authentication/auth.module';
+import { User } from './user.entity';
 
 @Module({
   imports: [
@@ -15,7 +14,9 @@ import { AuthModule } from './authentication/auth.module';
       entities: [User],
       synchronize: true,
     }),
-    AuthModule,
+    // PostsModule,
   ],
+  exports: [User],
+  // providers: [PostService],
 })
-export class AppModule {}
+export class DatabaseModule {}

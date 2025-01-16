@@ -1,16 +1,30 @@
-import { Controller } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
+import { Controller, Inject } from '@nestjs/common';
+import { ClientProxy, MessagePattern, Payload } from '@nestjs/microservices';
 import { AuthService } from './auth.service';
 import { User } from 'src/database/user.entity';
 import { CreateUserDto, ValidateUserDto } from './user.dto';
 
 @Controller()
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    @Inject('USER_SERVICE') private readonly userClient: ClientProxy,
+  ) {}
 
   @MessagePattern({ cmd: 'register_user' })
   async register(@Payload() payload: CreateUserDto): Promise<CreateUserDto> {
     const { email, password, nickname } = payload;
+
+    await this.userClient
+      .send(
+        { cmd: 'create_user_profile' },
+        {
+          email,
+          username: nickname,
+        },
+      )
+      .toPromise();
+
     return this.authService.register(email, password, nickname);
   }
 

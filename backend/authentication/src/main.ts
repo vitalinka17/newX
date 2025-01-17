@@ -13,6 +13,7 @@ async function bootstrap() {
       port: +process.env.MICROSERVICE_PORT,
     },
   });
+  console.log(process.env.DB_PORT);
   await app.listen();
 }
 bootstrap();

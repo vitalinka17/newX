@@ -1,0 +1,110 @@
+version: '3.8'
+services:
+  api_gateway:
+    build:
+      context: ./backend/client
+    container_name: api_gateway
+    ports:
+      - "3000:3000"
+    depends_on:
+      - authentication_service
+      - posts_microservice
+      - user_microservice
+    volumes:
+      - ./backend/client:/app
+      - /app/node_modules
+
+  authentication_service:
+    build:
+      context: ./backend/authentication
+    container_name: auth_service
+    ports:
+      - "3002:3000"
+    env_file:
+      - ./backend/authentication/.env
+    depends_on:
+      - auth_microservice-db
+    volumes:
+      - ./backend/authentication:/app
+      - /app/node_modules
+
+  auth_microservice-db:
+    image: postgres:15
+    container_name: auth_microservice-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: auth_microservice
+      POSTGRES_DB: auth_microservice
+    ports:
+      - "5432:5432"
+    volumes:
+      - auth_db_data:/var/lib/postgresql/data
+
+  posts_microservice:
+    build:
+      context: ./backend/posts
+    container_name: posts_service
+    ports:
+      - "3001:3000"
+    env_file:
+      - ./backend/posts/.env
+    depends_on:
+      - posts_microservice-db
+    volumes:
+      - ./backend/posts:/app
+      - /app/node_modules
+
+  posts_microservice-db:
+    image: postgres:15
+    container_name: posts_microservice-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: posts_microservice
+      POSTGRES_DB: posts_microservice
+    ports:
+      - "5433:5432"
+    volumes:
+      - posts_db_data:/var/lib/postgresql/data
+
+  user_microservice:
+    build:
+      context: ./backend/user
+    container_name: user_service
+    ports:
+      - "3003:3000"
+    env_file:
+      - ./backend/user/.env
+    depends_on:
+      - user_microservice-db
+    volumes:
+      - ./backend/user:/app
+      - /app/node_modules
+
+  user_microservice-db:
+    image: postgres:15
+    container_name: user_microservice-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: user_microservice
+      POSTGRES_DB: user_microservice
+    ports:
+      - "5434:5432"
+    volumes:
+      - user_db_data:/var/lib/postgresql/data
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - api_gateway
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+volumes:
+  auth_db_data:
+  posts_db_data:
+  user_db_data:

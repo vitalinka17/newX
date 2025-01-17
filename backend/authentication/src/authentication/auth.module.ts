@@ -24,6 +24,14 @@ import { JwtModule } from '@nestjs/jwt';
           port: +process.env.MICROSERVICE_PORT || 3002,
         },
       },
+      {
+        name: 'USER_SERVICE',
+        transport: Transport.TCP,
+        options: {
+          host: '127.0.0.1',
+          port: 3003,
+        },
+      },
     ]),
     TypeOrmModule.forFeature([User]),
   ],

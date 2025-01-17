@@ -9,13 +9,20 @@ export class UserController {
 
   @MessagePattern({ cmd: 'create_user_profile' })
   async createUserProfile(
-    @Payload() payload: { id: string; email: string; username: string },
-  ) {
-    await this.userService.createUser({
-      username: payload.username,
-      displayName: payload.username,
-      email: payload.email,
-    });
+    @Payload() payload: CreateUserDto,
+  ): Promise<{ success: boolean }> {
+    try {
+      await this.userService.createUser({
+        username: payload.username,
+        email: payload.email,
+        displayName: payload.displayName,
+        password: payload.password,
+      });
+      return { success: true };
+    } catch (error) {
+      console.error('Error creating user profile:', error.message);
+      return { success: false };
+    }
   }
 
   @MessagePattern({ cmd: 'create_user' })

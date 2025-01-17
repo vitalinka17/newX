@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
+import { MessagePattern, EventPattern, Payload } from '@nestjs/microservices';
 import { UserService } from './user.service';
 import { CreateUserDto, UpdateUserDto, FollowUserDto } from './user.dto';
 
@@ -7,17 +7,13 @@ import { CreateUserDto, UpdateUserDto, FollowUserDto } from './user.dto';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @MessagePattern({ cmd: 'create_user_profile' })
+  @EventPattern({ cmd: 'create_user_profile' })
   async createUserProfile(
     @Payload() payload: CreateUserDto,
   ): Promise<{ success: boolean }> {
     try {
-      await this.userService.createUser({
-        username: payload.username,
-        email: payload.email,
-        displayName: payload.displayName,
-        password: payload.password,
-      });
+      console.log('Received:', payload);
+      await this.userService.createUser(payload);
       return { success: true };
     } catch (error) {
       console.error('Error creating user profile:', error.message);
@@ -31,7 +27,7 @@ export class UserController {
   }
 
   @MessagePattern({ cmd: 'get_user_profile' })
-  async getUserProfile(@Payload() userId: string) {
+  async getUserProfile(@Payload() userId: number) {
     return this.userService.findUserById(userId);
   }
 

@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ClientProxy } from '@nestjs/microservices';
 import { User } from 'src/database/user.entity';
-import bcrypt from 'bcryptjs';
+import { hash, compare } from 'bcryptjs';
 import { CreateUserDto } from './user.dto';
 import { JwtService } from '@nestjs/jwt';
 
@@ -28,8 +28,12 @@ export class AuthService {
     if (existingUser) {
       throw new Error('Email is already in use');
     }
+    if (!password) {
+      throw new Error('Password is required');
+    }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await hash(password, 10);
+
     const user = this.userRepository.create({
       email,
       password: hashedPassword,
@@ -37,8 +41,6 @@ export class AuthService {
     });
 
     const savedUser = await this.userRepository.save(user);
-
-    this.client.emit('user_registered', { email, nickname });
 
     return savedUser;
   }
@@ -49,7 +51,7 @@ export class AuthService {
       return null;
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await compare(password, user.password);
     if (!isPasswordValid) {
       return null;
     }
@@ -66,7 +68,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid email or password');
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await compare(password, user.password);
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid email or password');
     }

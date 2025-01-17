@@ -10,28 +10,26 @@ export class AuthController {
     private readonly authService: AuthService,
     @Inject('USER_SERVICE') private readonly userClient: ClientProxy,
   ) {}
+
   @MessagePattern({ cmd: 'register_user' })
   async register(@Payload() payload: CreateUserDto): Promise<any> {
     const { email, password, nickname } = payload;
 
-    const userProfileResponse = await this.userClient
-      .send(
-        { cmd: 'create_user_profile' },
-        {
-          username: nickname,
-          email,
-          displayName: nickname,
-          password,
-        },
-      )
-      .toPromise();
+    const registeredUser = await this.authService.register(
+      email,
+      password,
+      nickname,
+    );
 
-    if (!userProfileResponse.success) {
-      throw new Error('Failed to create user profile');
-    }
+    this.userClient.emit('create_user_profile', {
+      userId: registeredUser.id,
+      username: nickname,
+      email,
+      displayName: nickname,
+      password,
+    });
 
-    // Proceed with registration in AuthService
-    return this.authService.register(email, password, nickname);
+    return registeredUser;
   }
 
   @MessagePattern({ cmd: 'validate_user' })

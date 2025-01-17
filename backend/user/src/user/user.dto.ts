@@ -1,5 +1,5 @@
 export class UserProfileDto {
-  id: string;
+  id: number;
   username: string;
   displayName: string;
   avatar: string | null;
@@ -9,18 +9,19 @@ export class UserProfileDto {
   createdAt: Date;
 }
 export class UpdateUserDto {
-  id: string;
+  id: number;
   displayName?: string;
   avatar?: string;
   headerPhoto?: string;
 }
 
 export class FollowUserDto {
-  userId: string;
-  targetUserId: string;
+  userId: number;
+  targetUserId: number;
 }
 
 export class CreateUserDto {
+  userId: number;
   username: string;
   displayName: string;
   password: string;

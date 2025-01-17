@@ -9,6 +9,7 @@ export class UserClientController {
   async createUser(
     @Body()
     payload: {
+      userId: number;
       username: string;
       displayName: string;
       password: string;
@@ -19,7 +20,7 @@ export class UserClientController {
   }
 
   @Get(':id')
-  async getUserById(@Param('id') id: string) {
+  async getUserById(@Param('id') id: number) {
     return this.userClientService.findUserById(id);
   }
 
@@ -30,31 +31,31 @@ export class UserClientController {
 
   @Patch(':id')
   async updateUser(
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Body() payload: { email?: string; username?: string },
   ) {
     return this.userClientService.updateUser({ id, ...payload });
   }
 
   @Post('follow')
-  async followUser(@Body() payload: { userId: string; targetUserId: string }) {
+  async followUser(@Body() payload: { userId: number; targetUserId: number }) {
     return this.userClientService.followUser(payload);
   }
 
   @Post('unfollow')
   async unfollowUser(
-    @Body() payload: { userId: string; targetUserId: string },
+    @Body() payload: { userId: number; targetUserId: number },
   ) {
     return this.userClientService.unfollowUser(payload);
   }
 
   @Get(':id/followers')
-  async getFollowers(@Param('id') id: string) {
+  async getFollowers(@Param('id') id: number) {
     return this.userClientService.getFollowers(id);
   }
 
   @Get(':id/following')
-  async getFollowing(@Param('id') id: string) {
+  async getFollowing(@Param('id') id: number) {
     return this.userClientService.getFollowing(id);
   }
 }

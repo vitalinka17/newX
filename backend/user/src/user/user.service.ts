@@ -18,16 +18,10 @@ export class UserService {
     const user = this.userRepository.create(dto);
     const savedUser = await this.userRepository.save(user);
 
-    this.client.emit('user_created', {
-      id: savedUser.id,
-      username: savedUser.username,
-      email: dto.email,
-    });
-
     return savedUser;
   }
 
-  async findUserById(id: string): Promise<User | null> {
+  async findUserById(id: number): Promise<User | null> {
     return this.userRepository.findOne({
       where: { id },
       relations: ['followers', 'following'],
@@ -107,7 +101,7 @@ export class UserService {
     }
   }
 
-  async getFollowers(userId: string): Promise<User[]> {
+  async getFollowers(userId: number): Promise<User[]> {
     const user = await this.userRepository.findOne({
       where: { id: userId },
       relations: ['followers'],
@@ -115,7 +109,7 @@ export class UserService {
     return user ? user.followers : [];
   }
 
-  async getFollowing(userId: string): Promise<User[]> {
+  async getFollowing(userId: number): Promise<User[]> {
     const user = await this.userRepository.findOne({
       where: { id: userId },
       relations: ['following'],

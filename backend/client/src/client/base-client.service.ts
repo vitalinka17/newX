@@ -4,25 +4,39 @@ import {
   ClientProxyFactory,
   Transport,
 } from '@nestjs/microservices';
+import * as dotenv from 'dotenv';
 
 @Injectable()
 export class BaseClientService implements OnModuleInit {
   private clients: { [key: string]: ClientProxy } = {};
 
+  constructor() {
+    dotenv.config();
+  }
+
   onModuleInit() {
     this.clients['POST_SERVICE'] = ClientProxyFactory.create({
       transport: Transport.TCP,
-      options: { host: '127.0.0.1', port: 3001 },
+      options: {
+        host: process.env.SERVICE_POSTS_HOST || 'localhost',
+        port: +process.env.SERVICE_POSTS_PORT || 3001,
+      },
     });
 
     this.clients['AUTH_SERVICE'] = ClientProxyFactory.create({
       transport: Transport.TCP,
-      options: { host: '127.0.0.1', port: 3002 },
+      options: {
+        host: process.env.SERVICE_AUTH_HOST || 'localhost',
+        port: +process.env.SERVICE_AUTH_PORT || 3002,
+      },
     });
 
     this.clients['USER_SERVICE'] = ClientProxyFactory.create({
       transport: Transport.TCP,
-      options: { host: '127.0.0.1', port: 3003 },
+      options: {
+        host: process.env.SERVICE_USER_HOST || 'localhost',
+        port: +process.env.SERVICE_USER_PORT || 3003,
+      },
     });
   }
 

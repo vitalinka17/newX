@@ -10,9 +10,20 @@ services:
       - authentication_service
       - posts_microservice
       - user_microservice
+    environment:
+      SERVICE_AUTH_HOST: authentication_service
+      SERVICE_AUTH_PORT: 3002
+      SERVICE_POSTS_HOST: posts_microservice
+      SERVICE_POSTS_PORT: 3001
+      SERVICE_USER_HOST: user_microservice
+      SERVICE_USER_PORT: 3003
+    env_file:
+      - ./backend/client/.env
     volumes:
       - ./backend/client:/app
       - /app/node_modules
+    networks:
+      - microservices_network
 
   authentication_service:
     build:
@@ -27,6 +38,8 @@ services:
     volumes:
       - ./backend/authentication:/app
       - /app/node_modules
+    networks:
+      - microservices_network
 
   auth_microservice-db:
     image: postgres:15
@@ -39,6 +52,8 @@ services:
       - "5432:5432"
     volumes:
       - auth_db_data:/var/lib/postgresql/data
+    networks:
+      - microservices_network
 
   posts_microservice:
     build:
@@ -53,6 +68,8 @@ services:
     volumes:
       - ./backend/posts:/app
       - /app/node_modules
+    networks:
+      - microservices_network
 
   posts_microservice-db:
     image: postgres:15
@@ -65,6 +82,8 @@ services:
       - "5433:5432"
     volumes:
       - posts_db_data:/var/lib/postgresql/data
+    networks:
+      - microservices_network
 
   user_microservice:
     build:
@@ -79,6 +98,8 @@ services:
     volumes:
       - ./backend/user:/app
       - /app/node_modules
+    networks:
+      - microservices_network
 
   user_microservice-db:
     image: postgres:15
@@ -91,6 +112,8 @@ services:
       - "5434:5432"
     volumes:
       - user_db_data:/var/lib/postgresql/data
+    networks:
+      - microservices_network
 
   frontend:
     build:
@@ -103,8 +126,14 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
+    networks:
+      - microservices_network
 
 volumes:
   auth_db_data:
   posts_db_data:
   user_db_data:
+
+networks:
+  microservices_network:
+    external: true

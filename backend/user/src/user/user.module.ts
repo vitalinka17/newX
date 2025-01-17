@@ -13,7 +13,7 @@ import { UserService } from './user.service';
         name: 'USER_SERVICE',
         transport: Transport.TCP,
         options: {
-          host: '127.0.0.1',
+          host: '0.0.0.0',
           port: +process.env.MICROSERVICE_PORT || 3003,
         },
       },

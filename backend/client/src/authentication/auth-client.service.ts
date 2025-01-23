@@ -1,27 +1,27 @@
-import { Injectable } from '@nestjs/common';
-import { BaseClientService } from '../client/base-client.service';
+import { Inject, Injectable } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
+import { AuthProvider } from 'src/providers/auth.provider';
 
 @Injectable()
-export class AuthClientService extends BaseClientService {
+export class AuthClientService {
+  constructor(@Inject(AuthProvider.provide) private authService: ClientProxy) {}
+
   async registerUser(user: {
     email: string;
     password: string;
     nickname: string;
   }) {
-    const client = this.getClient('AUTH_SERVICE');
-    return client.send({ cmd: 'register_user' }, user).toPromise();
+    return this.authService.send({ cmd: 'register_user' }, user).toPromise();
   }
 
   async validateUser(user: { email: string; password: string }) {
-    const client = this.getClient('AUTH_SERVICE');
-    return client.send({ cmd: 'validate_user' }, user).toPromise();
+    return this.authService.send({ cmd: 'validate_user' }, user).toPromise();
   }
 
   async loginUser(user: {
     email: string;
     password: string;
   }): Promise<{ accessToken: string }> {
-    const client = this.getClient('AUTH_SERVICE');
-    return client.send({ cmd: 'login_user' }, user).toPromise();
+    return this.authService.send({ cmd: 'login_user' }, user).toPromise();
   }
 }

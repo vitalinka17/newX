@@ -11,6 +11,10 @@ export class AuthController {
     @Inject('USER_SERVICE') private readonly userClient: ClientProxy,
   ) {}
 
+  onModuleInit() {
+    this.userClient.connect();
+  }
+
   @MessagePattern({ cmd: 'register_user' })
   async register(@Payload() payload: CreateUserDto): Promise<any> {
     const { email, password, nickname } = payload;
@@ -29,6 +33,13 @@ export class AuthController {
       password,
     });
 
+    console.log('Emitting...', {
+      userId: registeredUser.id,
+      username: nickname,
+      email,
+      displayName: nickname,
+      password,
+    });
     return registeredUser;
   }
 

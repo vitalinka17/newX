@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
 import { PostClientService } from './posts/post-client.service';
 import { PostClientController } from './posts/post-client.controller';
-import { BaseClientService } from './client/base-client.service';
 import { AuthClientController } from './authentication/auth-client.controller';
 import { AuthClientService } from './authentication/auth-client.service';
 import { UserClientService } from './user/user-client.service';
 import { UserClientController } from './user/user-client.controller';
+import { AuthProvider } from './providers/auth.provider';
+import { PostProvider } from './providers/post.provider';
+import { UserProvider } from './providers/user.provider';
 
 @Module({
   imports: [],
@@ -15,8 +17,10 @@ import { UserClientController } from './user/user-client.controller';
     UserClientController,
   ],
   providers: [
+    AuthProvider,
+    PostProvider,
+    UserProvider,
     PostClientService,
-    BaseClientService,
     AuthClientService,
     UserClientService,
   ],

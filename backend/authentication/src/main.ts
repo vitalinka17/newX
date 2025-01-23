@@ -10,10 +10,14 @@ async function bootstrap() {
     transport: Transport.TCP,
     options: {
       host: '0.0.0.0',
-      port: +process.env.MICROSERVICE_PORT || 3002,
     },
   });
-  console.log(process.env.DB_PORT);
   await app.listen();
+
+  console.log(
+    '[AUTH] host: %s; port: %s',
+    app['server']['host'],
+    app['server']['port'],
+  );
 }
 bootstrap();

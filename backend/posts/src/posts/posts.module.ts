@@ -13,8 +13,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         name: 'POST_SERVICE',
         transport: Transport.TCP,
         options: {
-          host: '0.0.0.0',
+          host: 'localhost',
           port: +process.env.MICROSERVICE_PORT || 3001,
+        },
+      },
+      {
+        name: 'USER_SERVICE',
+        transport: Transport.TCP,
+        options: {
+          host: 'localhost',
+          // port: 3003,
         },
       },
     ]),

@@ -20,16 +20,16 @@ import { JwtModule } from '@nestjs/jwt';
         name: 'AUTH_SERVICE',
         transport: Transport.TCP,
         options: {
-          host: '0.0.0.0',
-          port: +process.env.MICROSERVICE_PORT || 3002,
+          host: 'localhost',
+          // port: +process.env.MICROSERVICE_PORT || 3002,
         },
       },
       {
         name: 'USER_SERVICE',
         transport: Transport.TCP,
         options: {
-          host: '0.0.0.0',
-          port: 3003,
+          host: 'localhost',
+          // port: 3003,
         },
       },
     ]),

@@ -12,25 +12,22 @@ services:
       - user_microservice
     environment:
       SERVICE_AUTH_HOST: authentication_service
-      SERVICE_AUTH_PORT: 3002
       SERVICE_POSTS_HOST: posts_microservice
-      SERVICE_POSTS_PORT: 3001
       SERVICE_USER_HOST: user_microservice
-      SERVICE_USER_PORT: 3003
     env_file:
       - ./backend/client/.env
     volumes:
       - ./backend/client:/app
       - /app/node_modules
-    networks:
-      - microservices_network
+    # networks:
+    #   - microservices_network
 
   authentication_service:
     build:
       context: ./backend/authentication
     container_name: auth_service
-    ports:
-      - "3002:3000"
+    # ports:
+    #   - "3002:3002"
     env_file:
       - ./backend/authentication/.env
     depends_on:
@@ -38,8 +35,8 @@ services:
     volumes:
       - ./backend/authentication:/app
       - /app/node_modules
-    networks:
-      - microservices_network
+    # networks:
+    #   - microservices_network
 
   auth_microservice-db:
     image: postgres:15
@@ -48,19 +45,19 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: auth_microservice
       POSTGRES_DB: auth_microservice
-    ports:
-      - "5432:5432"
+    # ports:
+    #   - "5432:5432"
     volumes:
       - auth_db_data:/var/lib/postgresql/data
-    networks:
-      - microservices_network
+    # networks:
+    #   - microservices_network
 
   posts_microservice:
     build:
       context: ./backend/posts
     container_name: posts_service
-    ports:
-      - "3001:3000"
+    # ports:
+    #   - "3001:3001"
     env_file:
       - ./backend/posts/.env
     depends_on:
@@ -68,8 +65,8 @@ services:
     volumes:
       - ./backend/posts:/app
       - /app/node_modules
-    networks:
-      - microservices_network
+    # networks:
+    #   - microservices_network
 
   posts_microservice-db:
     image: postgres:15
@@ -82,15 +79,15 @@ services:
       - "5433:5432"
     volumes:
       - posts_db_data:/var/lib/postgresql/data
-    networks:
-      - microservices_network
+    # networks:
+    #   - microservices_network
 
   user_microservice:
     build:
       context: ./backend/user
     container_name: user_service
-    ports:
-      - "3003:3000"
+    # ports:
+    #   - "3003:3003"
     env_file:
       - ./backend/user/.env
     depends_on:
@@ -98,8 +95,8 @@ services:
     volumes:
       - ./backend/user:/app
       - /app/node_modules
-    networks:
-      - microservices_network
+    # networks:
+    #   - microservices_network
 
   user_microservice-db:
     image: postgres:15
@@ -112,8 +109,8 @@ services:
       - "5434:5432"
     volumes:
       - user_db_data:/var/lib/postgresql/data
-    networks:
-      - microservices_network
+    # networks:
+    #   - microservices_network
 
   frontend:
     build:
@@ -126,14 +123,14 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
-    networks:
-      - microservices_network
+    # networks:
+    #   - microservices_network
 
 volumes:
   auth_db_data:
   posts_db_data:
   user_db_data:
 
-networks:
-  microservices_network:
-    external: true
+# networks:
+#   microservices_network:
+#     driver: bridge

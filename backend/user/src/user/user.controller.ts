@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { MessagePattern, EventPattern, Payload } from '@nestjs/microservices';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 import { UserService } from './user.service';
 import { CreateUserDto, UpdateUserDto, FollowUserDto } from './user.dto';
 
@@ -7,7 +7,7 @@ import { CreateUserDto, UpdateUserDto, FollowUserDto } from './user.dto';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @EventPattern({ cmd: 'create_user_profile' })
+  @MessagePattern({ cmd: 'create_user_profile' })
   async createUserProfile(
     @Payload() payload: CreateUserDto,
   ): Promise<{ success: boolean }> {

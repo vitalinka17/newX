@@ -3,6 +3,7 @@ import { ClientProxy, MessagePattern, Payload } from '@nestjs/microservices';
 import { AuthService } from './auth.service';
 import { User } from 'src/database/user.entity';
 import { CreateUserDto, ValidateUserDto } from './user.dto';
+import axios from 'axios';
 
 @Controller()
 export class AuthController {
@@ -19,28 +20,33 @@ export class AuthController {
   async register(@Payload() payload: CreateUserDto): Promise<any> {
     const { email, password, nickname } = payload;
 
-    const registeredUser = await this.authService.register(
-      email,
-      password,
-      nickname,
-    );
+    console.log('Registering user:', payload);
 
-    this.userClient.emit('create_user_profile', {
-      userId: registeredUser.id,
-      username: nickname,
-      email,
-      displayName: nickname,
-      password,
-    });
+    try {
+      const registeredUser = await this.authService.register(
+        email,
+        password,
+        nickname,
+      );
+      console.log('User registered:', registeredUser);
 
-    console.log('Emitting...', {
-      userId: registeredUser.id,
-      username: nickname,
-      email,
-      displayName: nickname,
-      password,
-    });
-    return registeredUser;
+      // Send API request using Axios
+      const response = await axios.post(
+        'http://host.docker.internal:3000/users',
+        {
+          username: nickname,
+          email,
+          displayName: nickname,
+          password,
+        },
+      );
+
+      console.log('API Response:', response.data);
+      return registeredUser;
+    } catch (error) {
+      console.error('Error in register function:', error);
+      throw new Error(error.message || 'Registration failed');
+    }
   }
 
   @MessagePattern({ cmd: 'validate_user' })
